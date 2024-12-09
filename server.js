@@ -4,6 +4,9 @@ var app = express(); // Create an Express application instance
 const path = require("path"); // Node.js module to handle file and directory paths
 var fs = require("fs"); 
 
+// const port = process.env.PORT || 3000
+const port = 3000
+
 // Middleware to parse JSON data from incoming requests
 app.use(express.json());
 
@@ -33,3 +36,7 @@ app.get('/AfterSchoolActivities', (req, res) => {
         res.status(404); // Set status to 404
         res.send("File not found!"); 
     });
+
+    app.listen(port, () => {
+        console.log('Express.js server running')
+    })
