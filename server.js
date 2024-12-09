@@ -11,11 +11,11 @@ const port = 3000
 app.use(express.json());
 
 // Middleware to serve static files
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, '../Frontend')));
 
 // Default route to serve the index.html
 app.get('/AfterSchoolActivities', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
 });
 
 // Middleware to serve static files from the "image" directory
@@ -30,6 +30,14 @@ app.get('/AfterSchoolActivities', (req, res) => {
             else next(); 
         }); 
     });
+
+    // Connecting to the Mongodb
+    const MongoClient = require('mongodb').MongoClient;
+    let db;
+    MongoClient.connect('mongodb+srv://ridafarheen321:Iminfogirl123@cluster0.fgisn9c.mongodb.net', (err, client) => {
+        db = client.db('Webstore');
+        console.log('Connected to MongoDB');
+    })
 
     // Handle 404 errors for undefined routes
     app.use(function(req, res) { 
