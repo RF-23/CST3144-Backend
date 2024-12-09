@@ -19,32 +19,40 @@ app.get('/AfterSchoolActivities', (req, res) => {
 });
 
 // Middleware to serve static files from the "image" directory
-    app.use(function(req, res, next) { 
-        const filePath = path.join(__dirname, "images", req.url); 
-        fs.stat(filePath, function(err, fileInfo) { 
-            if (err) { 
-                next(); 
-                return; 
-            } 
-            if (fileInfo.isFile()) res.sendFile(filePath); 
-            else next(); 
-        }); 
-    });
+app.use(function(req, res, next) { 
+    const filePath = path.join(__dirname, "images", req.url); 
+    fs.stat(filePath, function(err, fileInfo) { 
+        if (err) { 
+            next(); 
+            return; 
+        } 
+        if (fileInfo.isFile()) res.sendFile(filePath); 
+        else next(); 
+    }); 
+});
 
-    // Connecting to the Mongodb
-    const MongoClient = require('mongodb').MongoClient;
-    let db;
-    MongoClient.connect('mongodb+srv://ridafarheen321:Iminfogirl123@cluster0.fgisn9c.mongodb.net', (err, client) => {
-        db = client.db('Webstore');
-        console.log('Connected to MongoDB');
+// Connecting to the Mongodb
+const MongoClient = require('mongodb').MongoClient;
+let db;
+MongoClient.connect('mongodb+srv://ridafarheen321:Iminfogirl123@cluster0.fgisn9c.mongodb.net', (err, client) => {
+db = client.db('Webstore');
+console.log('Connected to MongoDB');
     })
 
-    // Handle 404 errors for undefined routes
-    app.use(function(req, res) { 
-        res.status(404); // Set status to 404
-        res.send("File not found!"); 
-    });
+// Logger Middleware
+app.use((req, res, next) => {        
+const method = req.method; // HTTP method (GET, POST, etc.)
+const url = req.url;       // Requested URL        
+const timestamp = new Date().toISOString(); // Current timestamp        console.log(`[${timestamp}] ${method} request to ${url}`);
+next(); // Pass control to the next middleware or route handler
+});
+  
+// Handle 404 errors for undefined routes
+app.use(function(req, res) {         
+res.status(404); // Set status to 404
+res.send("File not found!"); 
+});
 
-    app.listen(port, () => {
-        console.log('Express.js server running')
-    })
+app.listen(port, () => {
+console.log('Express.js server running')
+})
