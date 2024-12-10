@@ -4,18 +4,18 @@ var app = express(); // Create an Express application instance
 const path = require("path"); // Node.js module to handle file and directory paths
 var fs = require("fs"); 
 
-// const port = process.env.PORT || 3000
-const port = 3000
+const port = process.env.PORT || 3000
 
 // Middleware to parse JSON data from incoming requests
 app.use(express.json());
 
 // Middleware to serve static files
-app.use(express.static(path.join(__dirname, '../Frontend')));
+app.use(express.static(path.join(__dirname, '../FRONTEND')));
 
 // Default route to serve the index.html
 app.get('/AfterSchoolActivities', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
+  // res.sendFile(path.join(__dirname, '../FRONTEND', 'index.html'));
+  res.send("one");
 });
 
 // Middleware to serve static files from the "image" directory
@@ -57,7 +57,8 @@ app.use((req, res, next) => {
     // HEAD Method: Retrieves the headers for a resource without returning the resource body itself unlike GET Method
     res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT"); // OPTIONS
     res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-    next(); // Continue to the next middleware  
+    res.sendStatus(200); // Send HTTP 200 status for preflight requests
+    next(); // Continue to the next middleware
 });
 
 // Middleware to handle requests for specific collections dynamically
