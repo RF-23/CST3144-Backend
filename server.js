@@ -38,14 +38,6 @@ MongoClient.connect('mongodb+srv://ridafarheen321:Iminfogirl123@cluster0.fgisn9c
 db = client.db('Webstore');
 console.log('Connected to MongoDB');
     })
-
-// Logger Middleware
-app.use((req, res, next) => {        
-const method = req.method; // HTTP method (GET, POST, etc.)
-const url = req.url;       // Requested URL        
-const timestamp = new Date().toISOString(); // Current timestamp        console.log(`[${timestamp}] ${method} request to ${url}`);
-next(); // Pass control to the next middleware or route handler
-});
   
 // Handle 404 errors for undefined routes
 app.use(function(req, res) {         
