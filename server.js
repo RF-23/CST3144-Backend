@@ -109,6 +109,30 @@ app.post("/AfterSchoolActivities/orders", (req, res) => {
       });
 });
 
+// GET endpoint to retrieve the current inventory of a specific lesson by ID
+app.get("/AfterSchoolActivities/lessons/:lessonId", (req, res) => {
+    const lessonId = Number(req.params.lessonId); // Convert the lesson ID to a number since it's numeric
+  
+    const lessonsCollection = db.collection("lessons"); // Reference the 'lessons' collection
+  
+    // Find the lesson by its 'id' field
+    lessonsCollection.findOne({ id: lessonId })
+      .then((lesson) => {
+        if (!lesson) {
+          return res.status(404).json({ error: "Lesson not found" }); // Respond with an error if the lesson is not found
+        }
+        res.status(200).json({
+          id: lesson.id, // Include the lesson's ID in the response
+          title: lesson.title, // Include the lesson's title
+          availableInventory: lesson.availableInventory // Include the available inventory
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching lesson inventory:", error); // Log the error
+        res.status(500).json({ error: "Failed to fetch lesson inventory" }); // Respond with an error message
+      });
+  });
+  
 // Handle 404 errors for undefined routes
 app.use(function(req, res) {         
 res.status(404); // Set status to 404
