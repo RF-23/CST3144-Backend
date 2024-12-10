@@ -203,6 +203,12 @@ app.get("/AfterSchoolActivities/search/:query", (req, res) => {
       });
   });
   
+// Error-handling middleware to handle unexpected errors
+app.use((err, req, res, next) => {
+    console.error("Error:", err); // Log the error
+    res.status(500).send({ error: "Internal Server Error" }); // Respond with a generic error message
+});
+
 // Handle 404 errors for undefined routes
 app.use(function(req, res) {         
 res.status(404); // Set status to 404
