@@ -37,7 +37,16 @@ let db;
 MongoClient.connect('mongodb+srv://ridafarheen321:Iminfogirl123@cluster0.fgisn9c.mongodb.net', (err, client) => {
 db = client.db('Webstore');
 console.log('Connected to MongoDB');
-    })
+})
+    
+// Logger Middleware: Logs each HTTP request with the method, URL, and timestamp
+app.use((req, res, next) => {
+    const method = req.method; // HTTP method (GET, POST and PUT)
+    const url = req.url;       // Accessing URL 
+    const timestamp = new Date().toISOString(); // Current timestamp
+    console.log(`[${timestamp}] ${method} request to ${url}`);
+    next(); // Passing control to the next middleware 
+  });  
   
 // Handle 404 errors for undefined routes
 app.use(function(req, res) {         
