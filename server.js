@@ -46,7 +46,19 @@ app.use((req, res, next) => {
     const timestamp = new Date().toISOString(); // Current timestamp
     console.log(`[${timestamp}] ${method} request to ${url}`);
     next(); // Passing control to the next middleware 
-  });  
+});  
+  
+// Middleware to handle CORS (Cross-Origin Resource Sharing)
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    // OPTIONS Method: Before sending certain types of requests (like PUT, DELETE, or those with custom headers), 
+    // Browsers make a preflight OPTIONS request to check if the server allows the actual request
+    // HEAD Method: Retrieves the headers for a resource without returning the resource body itself unlike GET Method
+    res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT"); // OPTIONS
+    res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+    next(); // Continue to the next middleware  
+});
   
 // Handle 404 errors for undefined routes
 app.use(function(req, res) {         
