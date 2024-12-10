@@ -170,6 +170,39 @@ app.put("/AfterSchoolActivities/lessons/:lessonId", (req, res) => {
       });
   });
   
+// GET endpoint to search lessons by various fields (inventory, price, title and location)
+app.get("/AfterSchoolActivities/search/:query", (req, res) => {
+    const query = req.params.query; // Extract the search query from the URL
+  
+    const lessonsCollection = db.collection("lessons"); // Reference the 'lessons' collection
+  
+    // Dynamic filter to search by numeric fields and text fields
+    const filter = {
+      // Performs a logical OR operation on multiple conditions
+      $or: [
+        { availableInventory: Number(query) }, // Search by inventory for numeric query
+        { price: Number(query) },              // Search by price for numeric query
+        // $regex: Searches for the query as a substring within the
+        // $options: Ensures the search is case-insensitive
+        { title: { $regex: query, $options: "i" } }, // Search by title 
+        { location: { $regex: query, $options: "i" } } // Search by location 
+      ]
+    };
+  
+    // Find lessons matching the filter
+    lessonsCollection.find(filter).toArray()
+      .then((lessons) => {
+        if (lessons.length === 0) {
+          return res.status(404).json({ error: "No lessons found matching the query" }); // Respond with an error if no matches are found
+        }
+        res.status(200).json(lessons); // Respond with the matching lessons
+      })
+      .catch((error) => {
+        console.error("Error fetching lessons:", error); // Log the error
+        res.status(500).json({ error: "Failed to fetch lessons" }); // Respond with an error message
+      });
+  });
+  
 // Handle 404 errors for undefined routes
 app.use(function(req, res) {         
 res.status(404); // Set status to 404
