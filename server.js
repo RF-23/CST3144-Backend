@@ -133,6 +133,43 @@ app.get("/AfterSchoolActivities/lessons/:lessonId", (req, res) => {
       });
   });
   
+// PUT endpoint to update the inventory for a specific lesson
+app.put("/AfterSchoolActivities/lessons/:lessonId", (req, res) => {
+    const lessonId = Number(req.params.lessonId); // Convert the lesson ID to a number
+    const { quantity } = req.body; // Extract the quantity to decrement from the request body based on the users choice
+  
+    const lessonsCollection = db.collection("lessons"); // Reference the 'lessons' collection
+  
+    // Update the lesson's inventory by decrementing it with the specified quantity
+    lessonsCollection.findOneAndUpdate(
+      { id: lessonId }, // Query by the lesson's numeric ID
+      { 
+        $inc: { availableInventory: -quantity } // Decrement the inventory
+      },
+      { returnDocument: "after" } // Return the updated document
+    )
+      .then((result) => {
+        if (!result.value) {
+          // Respond with an error if the lesson is not found
+          return res.status(404).json({ error: "Lesson not found" }); 
+        }
+        // Respond with the updated inventory details
+        res.status(200).json({
+          message: "Inventory updated successfully",
+          // Previous inventory value
+          PreviousInventory: result.value.availableInventory, 
+          // Quantity deducted
+          Quantity: quantity, 
+          // Updated inventory value
+          UpdatedInventory:  result.lastErrorObject.updatedExisting ? result.value.availableInventory - quantity : null, 
+        });
+      })
+      .catch((error) => {
+        console.error("Error updating lesson inventory:", error); // Log the error
+        res.status(500).json({ error: "Failed to update inventory" }); // Respond with an error message
+      });
+  });
+  
 // Handle 404 errors for undefined routes
 app.use(function(req, res) {         
 res.status(404); // Set status to 404
