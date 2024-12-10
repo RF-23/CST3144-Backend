@@ -59,6 +59,21 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     next(); // Continue to the next middleware  
 });
+
+// Middleware to handle requests for specific collections dynamically
+// The collection name will be extracted from the route parameter
+app.param('collectionName', (req, res, next, collectionName) => { 
+    req.collection = db.collection(collectionName); // Set the collection reference in the request object
+    return next(); // Pass control to the next middleware  
+});
+
+// GET endpoint to fetch all documents from a specified collection
+app.get('/AfterSchoolActivities/:collectionName', (req, res, next) => {
+    req.collection.find({}).toArray((e, results) => { // Retrieve all documents from the collection
+    if (e) return next(e); // Pass any errors to the error handler
+        res.send(results); // Send the results as the response
+    });
+});
   
 // Handle 404 errors for undefined routes
 app.use(function(req, res) {         
