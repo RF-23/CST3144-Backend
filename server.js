@@ -10,12 +10,12 @@ const port = process.env.PORT || 3000
 app.use(express.json());
 
 // Middleware to serve static files
-app.use(express.static(path.join(__dirname, '../FRONTEND')));
+app.use(express.static(path.join(__dirname, '../Frontend')));
 
 // Default route to serve the index.html
 app.get('/AfterSchoolActivities', (req, res) => {
-  // res.sendFile(path.join(__dirname, '../FRONTEND', 'index.html'));
-  res.send("one");
+  res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
+  // res.send("one");
 });
 
 // Middleware to serve static files from the "image" directory
@@ -50,15 +50,21 @@ app.use((req, res, next) => {
   
 // Middleware to handle CORS (Cross-Origin Resource Sharing)
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    // OPTIONS Method: Before sending certain types of requests (like PUT, DELETE, or those with custom headers), 
-    // Browsers make a preflight OPTIONS request to check if the server allows the actual request
-    // HEAD Method: Retrieves the headers for a resource without returning the resource body itself unlike GET Method
-    res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT"); // OPTIONS
-    res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-    res.sendStatus(200); // Send HTTP 200 status for preflight requests
-    next(); // Continue to the next middleware
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  // OPTIONS Method: Before sending certain types of requests (like PUT, DELETE, or those with custom headers),
+  // Browsers make a preflight OPTIONS request to check if the server allows the actual request
+  // HEAD Method: Retrieves the headers for a resource without returning the resource body itself unlike GET Method
+  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
+  res.setHeader(
+      'Access-Control-Allow-Headers',
+      'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers'
+  );
+  if (req.method === 'OPTIONS') {
+      res.sendStatus(200); // Send HTTP 200 status for preflight requests
+  } else {
+      next(); // Continue to the next middleware
+  }
 });
 
 // Middleware to handle requests for specific collections dynamically
