@@ -20,7 +20,7 @@ app.get('/AfterSchoolActivities', (req, res) => {
 
 // Middleware to serve static files from the "image" directory
 app.use(function(req, res, next) { 
-    const filePath = path.join(__dirname, "images", req.url); 
+    const filePath = path.join(__dirname, "static", req.url); 
     fs.stat(filePath, function(err, fileInfo) { 
         if (err) { 
             next(); 
