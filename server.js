@@ -2,25 +2,26 @@
 var express = require("express"); // Express framework for building web applications
 var app = express(); // Create an Express application instance
 const path = require("path"); // Node.js module to handle file and directory paths
-var fs = require("fs");
+var fs = require("fs"); // fs (File System) module provides methods for interacting with the file system
 
+// Sets the port for the server to listen on, using the environment variable PORT if available,
+// otherwise defaults to port 3000 if the environment variable is not set.
 const port = process.env.PORT || 3000
+
 // Middleware to parse JSON data from incoming requests
 app.use(express.json());
 
-// Middleware to serve static files
+// Middleware to serve static files from the Frontend folder
 app.use(express.static(path.join(__dirname, '../Frontend')));
-
-app.get('/', (req, res) => {
-  res.send("Please access the website at /AfterSchoolActivities");
-});
 
 // Default route to serve the index.html
 app.get('/AfterSchoolActivities', (req, res) => {
   res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
 });
 
-// Middleware to serve static files from the "image" directory
+// Middleware to serve static image files from the "static" directory
+// Checks if the requested file exists, if true the file is sent as a response
+// otherwise, it passes the request to the next middleware
 app.use(function (req, res, next) {
   const filePath = path.join(__dirname, "static", req.url);
   fs.stat(filePath, function (err, fileInfo) {
@@ -33,7 +34,8 @@ app.use(function (req, res, next) {
   });
 });
 
-// Connecting to the Mongodb
+// Connecting to MongoDB using the MongoClient, and selecting the 'Webstore' database.
+// Upon successful connection, a message is logged, and the database connection is stored in the 'db' variable.
 const MongoClient = require('mongodb').MongoClient;
 let db;
 MongoClient.connect('mongodb+srv://ridafarheen321:Iminfogirl123@cluster0.fgisn9c.mongodb.net', (err, client) => {
@@ -110,7 +112,8 @@ app.post("/AfterSchoolActivities/orders", (req, res) => {
   // Insert the order into the database
   ordersCollection.insertOne(orderData)
     .then((result) => {
-      res.status(201).json({ message: "Order placed successfully", orderId: result.insertedId }); // Respond with the unique order _id from the orders collection 
+      // Respond with the unique order _id from the orders collection 
+      res.status(201).json({ message: "Order placed successfully", orderId: result.insertedId }); 
     })
     .catch((error) => {
       console.error("Error inserting order into MongoDB:", error); // Log the error
@@ -218,12 +221,14 @@ app.use((err, req, res, next) => {
   res.status(500).send({ error: "Internal Server Error" }); // Respond with a generic error message
 });
 
-// Handle 404 errors for undefined routes
+// Handle 404 errors for undefined routes including static image files
 app.use(function (req, res) {
   res.status(404); // Set status to 404
   res.send("File not found!");
 });
 
+// Starts the Express.js server and logs the port it's running on, 
+// using the environment variable or defaulting to port 3000
 app.listen(port, () => {
-  console.log('Express.js server running')
+  console.log(`Express.js server running on ${port}`);
 })
