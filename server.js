@@ -218,13 +218,13 @@ app.get("/AfterSchoolActivities/search/:query", (req, res) => {
 // Error-handling middleware to handle unexpected errors
 app.use((err, req, res, next) => {
   console.error("Error:", err); // Log the error
-  res.status(500).send({ error: "Internal Server Error" }); // Respond with a generic error message
+  res.status(500).send({ error: "Internal Server Error" }); // Respond with an error message
 });
 
 // Handle 404 errors for undefined routes including static image files
 app.use(function (req, res) {
   res.status(404); // Set status to 404
-  res.send("File not found!");
+  res.send("File not found!\nPlease search for lessons collection documents with this url: AfterschoolActivities/lessons\nPlease search for orders collection documents with this url: AfterschoolActivities/orders\nFor search results: AfterschoolActivities/search/${query}\nFor a specific lesson id, title and available inventory: AfterschoolActivities/lessons/:id")
 });
 
 // Starts the Express.js server and logs the port it's running on, 
