@@ -224,7 +224,7 @@ app.use((err, req, res, next) => {
 // Handle 404 errors for undefined routes including static image files
 app.use(function (req, res) {
   res.status(404); // Set status to 404
-  res.send("File not found!<br>Please search for lessons collection documents with this URL: AfterschoolActivities/lessons<br>Please search for orders collection documents with this URL: AfterschoolActivities/orders<br>For search results: AfterschoolActivities/search/query" + "<br>For a specific lesson id, title, and available inventory: AfterschoolActivities/lessons/:id")
+  res.send("File not found!<br>Please search for lessons collection documents with this URL: AfterschoolActivities/lessons<br>Please search for orders collection documents with this URL: AfterschoolActivities/orders<br>For search results: AfterschoolActivities/search/query" + "<br>For a specific lesson id, title, and available inventory: AfterschoolActivities/lessons/:id" + "<br>For getting a specific lesson image: /images/lessonX_image.png where X stands from 1-10 for the 10 lesson images")
 });
 
 // Starts the Express.js server and logs the port it's running on, 
